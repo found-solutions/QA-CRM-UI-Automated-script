@@ -1,10 +1,12 @@
 from selenium.webdriver.support.wait import WebDriverWait
 import selenium.webdriver.support.expected_conditions as EC
 from selenium.webdriver.support.select import Select
+from selenium.webdriver.common.action_chains import ActionChains
 from common.logs import MyLog
 from all_path import Paths
 from read_config import ReadConfig
 import os
+import time
 
 
 class BasePage(object):
@@ -14,21 +16,24 @@ class BasePage(object):
         :param selenium_driver: 浏览器driver
         """
         self.driver = selenium_driver
-        self.url = ReadConfig().get_url('current_url')
         self.log = MyLog.my_log().get_logger()
 
-    def _open(self):
+    def _open(self, url_type):
         """
         用于打开浏览器，最大化浏览器，智能等待时间设置为30秒
         :return: None
         """
         try:
-            self.driver.get(self.url)
+            if url_type == 1:
+                self.driver.get(ReadConfig().get_url('admin_portal'))
+                self.log.info('打开测试网址成功: ' + str(ReadConfig().get_url('admin_portal')))
+            elif url_type == 2:
+                self.driver.get(ReadConfig().get_url('member_portal'))
+                self.log.info('打开测试网址成功.' + str(ReadConfig().get_url('member_portal')))
             self.driver.maximize_window()
             self.driver.implicitly_wait(30)
-            self.log.info('打开测试网址成功.')
         except:
-            self.log.error("未能正确打开页面：" + self.url)
+            self.log.error("未能正确打开页面：{}".format(url_type))
             raise
 
     def find_element(self, *loc):
@@ -38,8 +43,8 @@ class BasePage(object):
         :return: 元素对象
         """
         try:
-            WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(loc))
-            WebDriverWait(self.driver, 10).until(EC.presence_of_element_located(loc))
+            WebDriverWait(self.driver, 10, 0.5).until(EC.visibility_of_element_located(loc))
+            WebDriverWait(self.driver, 10, 0.5).until(EC.presence_of_element_located(loc))
             return self.driver.find_element(*loc)
         except:
             self.log.error("元素未找到：" + str(loc))
@@ -57,6 +62,7 @@ class BasePage(object):
             if clear:
                 self.find_element(*loc).clear()
                 self.find_element(*loc).send_keys(value)
+                time.sleep(0.3)
             else:
                 self.find_element(*loc).send_keys(value)
         except AttributeError:
@@ -85,3 +91,44 @@ class BasePage(object):
         except:
             self.log.error("下拉框选择失败：" + str(loc))
             raise
+
+    def select_value_click(self, a, b):
+        try:
+            self.find_element(*a).click()
+            self.find_element(*b).click()
+            time.sleep(0.3)
+        except:
+            self.log.error("选择非标准的下拉框失败：" + str(a))
+            raise
+
+    def move_yzm(self, a, b):
+        """
+        验证码 滑动 ，
+        :param a:  滑动按钮定位
+        :param b:  滑动模块整体定位
+        :return:
+        """
+        try:
+            yzm = self.find_element(*a)
+            yzm_back = self.find_element(*b)
+            yzm_back_size = yzm_back.size
+            action = ActionChains(self.driver)
+            action.drag_and_drop_by_offset(yzm, yzm_back_size['width'], yzm_back_size['height']).perform()
+            time.sleep(0.3)
+        except Exception as e:
+            self.log.info('验证码滑动失败：' + str(e))
+            raise
+
+    def scroll_window(self, y=10000):
+        """
+        移动浏览器滚动条到窗口指定位置
+        :param y:
+        :return:
+        """
+        try:
+            js = 'document.documentElement.scrollTop={}'.format(y)
+        except Exception as e:
+            pass
+
+
+

@@ -168,6 +168,6 @@ def db(sql):
 
 
 if __name__ == '__main__':
-    sql1 = "SELECT external_id FROM trading_accounts"
+    sql1 = "SELECT external_id FROM trading_accounts where id = 133500"
     res1 = db(sql1)
     print(res1)

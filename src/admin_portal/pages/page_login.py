@@ -15,7 +15,7 @@ class PageLogin(BasePage):
         self.find_element(*self.login_type_button).click()
         self.log.info('点击登录类型。')
 
-    def login(self, user, pwd):
+    def login(self, user='supergod', pwd='Lb123456'):
         self.send_keys(user, *self.name_input)
         self.log.info('输入用户名：{}'.format(user))
         self.send_keys(pwd, *self.pwd_input)

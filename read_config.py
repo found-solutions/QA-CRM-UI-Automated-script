@@ -7,7 +7,7 @@ class ReadConfig(object):
 
     def __init__(self):
         self.cf = ConfigParser()
-        self.cf.read(self.cfg_p)
+        self.cf.read(self.cfg_p, encoding='utf8')
 
     def get_url(self, key):
         value = self.cf.get("URL", key)
@@ -19,6 +19,10 @@ class ReadConfig(object):
 
     def get_ssh(self, key):
         value = self.cf.get("SSH", key)
+        return value
+
+    def get_global(self, key):
+        value = self.cf.get("GLOBAL", key)
         return value
 
 
