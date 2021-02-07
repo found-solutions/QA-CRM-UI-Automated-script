@@ -19,16 +19,16 @@ class TestRegister(pg.unittest.TestCase):
 
     def tearDown(self):
         self.driver.quit()
+        if self.sql:
+            pg.log.info('需要执行的sql：：' + str(self.sql.format(self.email)))
         pg.log.info('********** test end **********')
-        sql = self.sql
-        pg.log.info('需要执行的sql：：' + str(sql))
 
     @pg.ddt.data(*pg.ExcelUtil('register.xlsx').dict_data())
     @pg.ddt.unpack
     def test_register(self, **kwargs):
-        pg.log.info('********** test_register **********')
         try:
             self.sql = kwargs.get('sql', 0)
+            self.email = kwargs.get('email', 0)
             self.pr.go_to_register()
             self.pr.register_step1(
                 kwargs.get('first_name'),
@@ -38,8 +38,18 @@ class TestRegister(pg.unittest.TestCase):
                 kwargs.get('phone'),
                 kwargs.get('password')
             )
-            # self.pr.register_step2()
-
+            self.pr.register_step2(
+                kwargs.get('address'),
+                kwargs.get('city'),
+                kwargs.get('state'),
+                kwargs.get('postcode')
+            )
+            self.pr.register_step3()
+            self.pr.register_step4(
+                kwargs.get('investor_password')
+            )
+            self.assertIn(kwargs.get('expect'), self.pr.get_title())
+            pg.log.info('{}: 断言成功'.format(kwargs.get('desc')))
         except Exception as e:
             print(e)
             self.pr.img_screen('register')

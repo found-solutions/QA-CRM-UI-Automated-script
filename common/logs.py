@@ -8,7 +8,6 @@ class Log:
     def __init__(self):
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(logging.DEBUG)
-        print(os.path.join(Paths.log_path, '{}.log'.format(Paths.now_date)))
         fh = logging.FileHandler(os.path.join(Paths.log_path, '{}.log'.format(Paths.now_date)), encoding="utf-8")
         fh.setLevel(logging.INFO)
         ch = logging.StreamHandler()

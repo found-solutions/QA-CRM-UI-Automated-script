@@ -1,5 +1,5 @@
-# import src.admin_portal as pg
-# from selenium.webdriver.common.action_chains import ActionChains
+import src.admin_portal as pg
+from selenium.webdriver.common.action_chains import ActionChains
 #
 #
 # class TestGodUser(pg.unittest.TestCase):
@@ -17,25 +17,32 @@
 
 
 
-# u = 'https://stag-crm-member-2.tm-nonprod.com/register'
-#
-# options = pg.webdriver.ChromeOptions()
-# options.add_experimental_option("excludeSwitches", ["enable-automation"])
-# # Google 最新版本， 去除selenium机器人标识
+u = 'https://stag-crm-member-2.tm-nonprod.com/register'
+
+options = pg.webdriver.ChromeOptions()
+options.add_experimental_option("excludeSwitches", ["enable-automation"])
+# Google 最新版本， 去除selenium机器人标识
 # options.add_argument("--disable-blink-features=AutomationControlled")
 # options.add_experimental_option('useAutomationExtension', False)
 # d = pg.webdriver.Chrome(options=options, executable_path=pg.Paths.driver_path)
-#
-# d.get(u)
-#
-# hk = d.find_element_by_xpath('//*[@id="nc_1_n1z"]')
-# ip = d.find_element_by_xpath('//*[@id="nc_1__scale_text"]/span')
-# size = ip.size
-# print(size)
-# ActionChains(d).drag_and_drop_by_offset(hk, size['width'], size['height']).perform()
-#
-# print('end -------- ')
-# d.quit()
+driver = pg.webdriver.Chrome(executable_path=pg.Paths.driver_path)
+
+pl = pg.PageLogin(driver)
+
+pl._open(1)
+pl.click_login_type()
+pl.login()
+pg.time.sleep(3)
+driver.find_element_by_xpath("//*[text()='CLOSE']").click()
+pg.time.sleep(1)
+driver.find_element_by_xpath('//*[text()="Leverage Change"]').click()
+pg.time.sleep(2)
+
+js = "document.querySelector().style.top = 1"
+
+
+print('end -------- ')
+driver.quit()
 
 
 

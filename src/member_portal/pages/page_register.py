@@ -17,14 +17,20 @@ class PageRegister(BasePage):
     next1 = (By.XPATH, "//*[@id='app']/div/section/div[2]/div/div[3]/button")
 
     # step2
-    birth_input = (By.XPATH, "//input[@aria-label='Date of Birth *']")
+    birth_input_button = (By.XPATH, "//input[@aria-label='Date of Birth *']")
+    year = (By.XPATH, "//*[text()='2000']")
+    month = (By.XPATH, "//*[text()='Jan']")
+    day = (By.XPATH, "//*[text()='15']")
+    ok_button = (By.XPATH, "//span[text()='OK']")
+
     address_input = (By.XPATH, "//input[@aria-label='Address *']")
     city_input = (By.XPATH, "//input[@aria-label='City *']")
     state_input = (By.XPATH, "//input[@aria-label='State *']")
     post_code_input = (By.XPATH, "//input[@aria-label='Postcode *']")
     gender_select = (By.XPATH, "//*[@id='app']/div/section/main/section/div[2]/div[2]/section/div[2]/div/div/div[2]/form/div[1]/label[6]/div")
     gender_select_value = (By.XPATH, "//*[text()='Male']")
-    # 开启认证才有 ------------------------------------------------------------------------------
+    # crm配置开启认证才有
+    # ------------------------------------------------------------------------------
     electronic_select = (By.XPATH, "//*[@id='app']/div/section/main/section/div[2]/div[2]/section/div[2]/div/div/div[2]/form/div[2]/label/div")
     electronic_select_value = (By.XPATH, "//*[text()='Australian Driving Licence']")
     id_number_input = (By.XPATH, "//input[@aria-label='ID Number *']")
@@ -51,6 +57,7 @@ class PageRegister(BasePage):
     def go_to_register(self):
         self.find_element(*self.register_bt).click()
         self.log.info('点击【注册】按钮')
+        time.sleep(1)
 
     def register_step1(self, fn, mn, ln, email, phone, pwd):
         self.send_keys(fn, *self.first_name_input)
@@ -72,11 +79,22 @@ class PageRegister(BasePage):
         time.sleep(0.8)
         self.find_element(*self.next1).click()
         self.log.info('点击step1【下一步】按钮')
-        time.sleep(0.8)
+        time.sleep(5)
 
-    def register_step2(self, birth, address, city, state, postcode):
-        self.send_keys(birth, *self.birth_input)
-        self.log.info('输入birth：' + birth)
+    def register_step2(self, address, city, state, postcode):
+        self.find_element(*self.birth_input_button).click()
+        # self.move_to_element_click(*self.birth_input_button)
+        time.sleep(0.2)
+        self.log.info('点击birth日期控件')
+        self.find_element(*self.year).click()
+        time.sleep(0.2)
+        self.log.info('点击 年份')
+        self.find_element(*self.month).click()
+        time.sleep(0.2)
+        self.log.info('点击 月份')
+        self.find_element(*self.day).click()
+        time.sleep(0.2)
+        self.log.info('点击 day')
         self.send_keys(address, *self.address_input)
         self.log.info('输入address：' + address)
         self.send_keys(city, *self.city_input)
@@ -89,20 +107,35 @@ class PageRegister(BasePage):
         self.log.info('选择gender en： Mail')
         self.find_element(*self.next2).click()
         self.log.info('点击step2【下一步】按钮')
-        time.sleep(0.8)
+        time.sleep(2.2)
 
     def register_step3(self):
         self.find_element(*self.question1_checkbox).click()
         self.log.info('点击【复选框】按钮')
         self.find_element(*self.next3).click()
         self.log.info('点击step3【下一步】按钮')
+        time.sleep(2.2)
 
     def register_step4(self, investor_password):
         self.select_value_click(self.currency_select, self.currency_select_value)
+        self.log.info('选择currency： USD')
         self.select_value_click(self.leverage_select, self.leverage_select_value)
+        self.log.info('选择 leverage： 1:10')
         self.send_keys(investor_password, *self.investor_password)
+        self.log.info('输入 investor_password：' + investor_password)
+        self.scroll_window()
+        self.log.info('移动Y轴滚动条到页面底部')
+        self.find_element(*self.auth1).click()
+        self.log.info('点击【复选框1】按钮')
+        self.find_element(*self.auth2).click()
+        self.log.info('点击【复选框2】按钮')
+        self.find_element(*self.submit).click()
+        self.log.info('点击【提交】按钮')
+        time.sleep(5)
 
-
+    def get_title(self):
+        title = self.driver.title
+        return title
 
 
 

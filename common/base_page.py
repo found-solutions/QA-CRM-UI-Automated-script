@@ -116,19 +116,20 @@ class BasePage(object):
             action.drag_and_drop_by_offset(yzm, yzm_back_size['width'], yzm_back_size['height']).perform()
             time.sleep(0.3)
         except Exception as e:
-            self.log.info('验证码滑动失败：' + str(e))
+            self.log.error('验证码滑动失败：' + str(e))
             raise
 
     def scroll_window(self, y=10000):
         """
         移动浏览器滚动条到窗口指定位置
-        :param y:
-        :return:
+        :param y:  指定位置，默认滚动到浏览器底部
+        :return: None
         """
         try:
             js = 'document.documentElement.scrollTop={}'.format(y)
+            self.driver.excute_script(js)
         except Exception as e:
-            pass
+            self.log.error('浏览器滚动条滚动失败[位置：{}]：{}'.format(y, str(e)))
 
 
 
