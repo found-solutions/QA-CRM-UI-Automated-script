@@ -2,7 +2,7 @@ from common.base_page import BasePage
 from selenium.webdriver.common.by import By
 import time
 
-
+# # https://stag-crm-member-2.tm-nonprod.com/register?register_type=demo
 class PageRegister(BasePage):
     register_bt = (By.XPATH, "//a[text()='sign up']")
     # step1
@@ -53,6 +53,22 @@ class PageRegister(BasePage):
     auth1 = (By.XPATH, '//*[@id="app"]/div/section/main/section/div[2]/div[2]/section/div[2]/div/div/div[4]/form/div[7]/div[1]/div[1]/div')
     auth2 = (By.XPATH, '//*[@id="app"]/div/section/main/section/div[2]/div[2]/section/div[2]/div/div/div[4]/form/div[7]/div[2]/div[1]/div')
     submit = (By.XPATH, '//*[text()="SUBMIT"]')
+
+    # demo step2
+    ts_select = (By.XPATH, '//*[@id="app"]/div/section/main/section/div[2]/div[2]/section/div[2]/form/div[1]/label/div')
+    # Trading Server-en *
+    ts_select_value = (By.XPATH, '//*[text()="MT4 demo-tm_demo_demo_ts"]')
+    account_type_select = (By.XPATH, '//*[@id="app"]/div/section/main/section/div[2]/div[2]/section/div[2]/form/div[2]/label/div')
+    # Account Type-en *
+    account_type_select_value = (By.XPATH, '//*[text()="test55-en"]')
+    account_leverage_select = (By.XPATH, '//*[@id="app"]/div/section/main/section/div[2]/div[2]/section/div[2]/form/div[3]/label/div/div/div[1]')
+    account_leverage_select_value = (By.XPATH, '//*[text()="1:10"]')
+    account_currency_select = (By.XPATH, '//*[@id="app"]/div/section/main/section/div[2]/div[2]/section/div[2]/form/div[4]/div[1]/label/div/div/div[1]')
+    account_currency_select_value = (By.XPATH, '//*[text()="USD"]')
+    deposit_select = (By.XPATH, '//*[@id="app"]/div/section/main/section/div[2]/div[2]/section/div[2]/form/div[4]/div[2]/label/div/div/div[1]')
+    deposit_select_value = (By.XPATH, '//*[text()="1500.22"]')
+    td_pwd = (By.XPATH, '//*[@aria-label="Password *"]')
+    demo_submit = (By.XPATH, '//div[text()="SUBMIT"]')
 
     def go_to_register(self):
         self.find_element(*self.register_bt).click()
@@ -133,12 +149,23 @@ class PageRegister(BasePage):
         self.log.info('点击【提交】按钮')
         time.sleep(5)
 
+    def register_demo_step2(self, pwd):
+        self.select_value_click(self.ts_select, self.ts_select_value)
+        self.log.info('选择 ts')
+        self.select_value_click(self.account_type_select, self.account_type_select_value)
+        self.log.info('选择 account_type')
+        self.select_value_click(self.account_leverage_select, self.account_leverage_select_value)
+        self.log.info('选择 account_leverage')
+        self.select_value_click(self.account_currency_select, self.account_currency_select_value)
+        self.log.info('选择 account_currency')
+        self.select_value_click(self.deposit_select, self.deposit_select_value)
+        self.log.info('选择 deposit')
+        self.send_keys(pwd, *self.td_pwd)
+        self.log.info('输入交易密码：' + pwd)
+        self.find_element(*self.demo_submit).click()
+        self.log.info('点击【submit】按钮')
+        time.sleep(5)
+
     def get_title(self):
         title = self.driver.title
         return title
-
-
-
-
-
-

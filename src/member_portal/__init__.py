@@ -8,6 +8,8 @@ import unittest
 import time
 import ddt
 from src.member_portal.pages.page_register import PageRegister
+from src.member_portal.pages.page_login import PageLogin
+from src.member_portal.pages.page_dashboard import PageDashboard
 
 
 cf = ReadConfig()

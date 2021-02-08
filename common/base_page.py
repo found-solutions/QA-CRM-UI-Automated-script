@@ -17,11 +17,13 @@ class BasePage(object):
         """
         self.driver = selenium_driver
         self.log = MyLog.my_log().get_logger()
+        self.cf = ReadConfig()
 
     def _open(self, url_type):
         """
         用于打开浏览器，最大化浏览器，智能等待时间设置为30秒
-        :return: None
+        :param url_type: 1 admin portal； 2 member portal； other 自定义url
+        :return:
         """
         try:
             if url_type == 1:
@@ -29,9 +31,12 @@ class BasePage(object):
                 self.log.info('打开测试网址成功: ' + str(ReadConfig().get_url('admin_portal')))
             elif url_type == 2:
                 self.driver.get(ReadConfig().get_url('member_portal'))
-                self.log.info('打开测试网址成功.' + str(ReadConfig().get_url('member_portal')))
+                self.log.info('打开测试网址成功：' + str(ReadConfig().get_url('member_portal')))
+            else:
+                self.driver.get(url_type)
+                self.log.info('打开测试网址成功：' + str(url_type))
             self.driver.maximize_window()
-            self.driver.implicitly_wait(30)
+            self.driver.implicitly_wait(15)
         except:
             self.log.error("未能正确打开页面：{}".format(url_type))
             raise
@@ -95,6 +100,7 @@ class BasePage(object):
     def select_value_click(self, a, b):
         try:
             self.find_element(*a).click()
+            time.sleep(0.3)
             self.find_element(*b).click()
             time.sleep(0.3)
         except:

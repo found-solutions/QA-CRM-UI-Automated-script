@@ -16,9 +16,8 @@ class TestLogin(pg.unittest.TestCase):
         self.driver.quit()
         pg.log.info('清理环境成功')
         pg.log.info('********** test end **********')
-        pg.time.sleep(3)
 
-    @pg.ddt.data(*pg.ExcelUtil('login.xlsx').dict_data())
+    @pg.ddt.data(*pg.ExcelUtil('admin_login.xlsx').dict_data())
     @pg.ddt.unpack
     def test_login(self, **kwargs):
         try:

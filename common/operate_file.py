@@ -46,7 +46,7 @@ class ExcelUtil:
 
 
 if __name__ == "__main__":
-    filepath = "login.xlsx"
+    filepath = "member_login.xlsx"
     sheetName = "Sheet1"
     data = ExcelUtil(filepath, sheetName)
     print(data.dict_data())
