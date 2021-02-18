@@ -11,7 +11,7 @@ class Paths:
     error_img = os.path.join(os.path.realpath(__file__).rsplit('\\', 1)[0], 'error_img', now_date)
     if not os.path.exists(error_img):
         os.makedirs(error_img)
-    cases = os.path.join(os.path.realpath(__file__).rsplit('\\', 1)[0], 'src', 'cases')
+    cases = os.path.join(os.path.abspath(__file__).rsplit('\\', 1)[0], 'src')
     driver_path = os.path.join(os.path.realpath(__file__).rsplit('\\', 1)[0], 'common', 'chromedriver.exe')
 
 

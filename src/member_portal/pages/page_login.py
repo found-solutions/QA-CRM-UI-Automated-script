@@ -9,7 +9,7 @@ class PageLogin(BasePage):
     login_button = (By.XPATH, "//button[text()='LOGIN']")
     tips = (By.XPATH, "//p[@class='el-message__content']")
 
-    def my_login(self, email='auto@gmail.com', pwd='Auto1234'):
+    def my_login(self, email='uiauto@gmail.com', pwd='Auto1234'):
         self.send_keys(email, *self.email_input)
         self.log.info('输入email：' + email)
         self.send_keys(pwd, *self.pwd_input)

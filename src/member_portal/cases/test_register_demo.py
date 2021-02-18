@@ -21,6 +21,7 @@ class TestRegisterDemo(pg.unittest.TestCase):
         self.driver.quit()
         if self.sql:
             pg.log.info('执行清理环境sql：' + str(self.sql.format(self.email)))
+            pg.db(self.sql.format(self.email))
         pg.log.info('********** test end register demo ********** \n')
 
     @pg.ddt.data(*pg.ExcelUtil('register.xlsx').dict_data())
@@ -44,3 +45,4 @@ class TestRegisterDemo(pg.unittest.TestCase):
         except Exception as e:
             self.pr.img_screen('register_demo')
             pg.log.error('注册demo异常：' + str(e))
+            raise

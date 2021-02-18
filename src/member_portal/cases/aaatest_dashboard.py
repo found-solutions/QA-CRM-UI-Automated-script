@@ -60,8 +60,6 @@ class TestDashboard(pg.unittest.TestCase):
     @classmethod
     def tearDownClass(cls):
         cls.driver.quit()
-        for s in cls.all_sql:
-            pg.log.info('执行清理环境sql：' + str(s))
         pg.log.info('********** test end **********')
 
 

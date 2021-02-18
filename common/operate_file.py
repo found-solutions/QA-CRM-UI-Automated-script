@@ -2,13 +2,14 @@ import xlrd
 import os
 
 
-def find_file_abspath(start_path, file_name):
+def find_file_abspath(start_dir, file_name):
     """
-        start_path: 开始查找文件的路径 --> ./data
+        start_dir: 开始查找文件的路径的目录名称 --> 'data'
         file_name: 需要查找的文件名称
-        return： 查找的文件的绝对路径
+        return： 查找到的文件的绝对路径
     """
-    for root, dirs, files in os.walk(start_path):
+    file_path = os.path.join(os.path.abspath(os.path.dirname(os.path.dirname(__file__))), start_dir)
+    for root, dirs, files in os.walk(file_path):
         if len(files) != 0:
             for f in files:
                 if file_name == f:
@@ -18,8 +19,7 @@ def find_file_abspath(start_path, file_name):
 
 class ExcelUtil:
     def __init__(self, excel_name, sheet_ame="Sheet1"):
-        file_path = os.path.join(os.path.abspath(os.path.dirname(os.path.dirname(__file__))), 'data')
-        excel_path = find_file_abspath(file_path, excel_name)
+        excel_path = find_file_abspath('data', excel_name)
         self.data = xlrd.open_workbook(excel_path)
         self.table = self.data.sheet_by_name(sheet_ame)
         # 获取第一行作为key值
@@ -50,3 +50,5 @@ if __name__ == "__main__":
     sheetName = "Sheet1"
     data = ExcelUtil(filepath, sheetName)
     print(data.dict_data())
+    i = find_file_abspath('data', 'address_proof.jpg')
+    print(i)

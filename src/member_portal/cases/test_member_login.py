@@ -29,8 +29,8 @@ class TestLogin(pg.unittest.TestCase):
                 self.assertEqual(kwargs.get('expect'), self.pl.get_tip())
                 pg.log.info('【{}】断言成功'.format(kwargs.get('desc')))
         except Exception as e:
-            pg.log.error('【{}】断言失败: {}'.format(kwargs.get('case_no'), str(e)))
-            self.pl.img_screen('登录 case {}'.format(kwargs.get('case_no')))
+            pg.log.error('【{}】断言失败: {}'.format(kwargs.get('desc'), str(e)))
+            self.pl.img_screen('登录_case_{}'.format(kwargs.get('case_no')))
             raise
 
 

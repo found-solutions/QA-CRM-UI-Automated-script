@@ -20,6 +20,7 @@ class TestRegister(pg.unittest.TestCase):
         self.driver.quit()
         if self.sql:
             pg.log.info('执行清理环境sql：' + str(self.sql.format(self.email)))
+            pg.db(self.sql.format(self.email))
         pg.log.info('********** test end **********')
 
     @pg.ddt.data(*pg.ExcelUtil('register.xlsx').dict_data())
@@ -41,7 +42,12 @@ class TestRegister(pg.unittest.TestCase):
                 kwargs.get('address'),
                 kwargs.get('city'),
                 kwargs.get('state'),
-                kwargs.get('postcode')
+                kwargs.get('postcode'),
+                kwargs.get('id_number'),
+                kwargs.get('f_name'),
+                kwargs.get('l_name'),
+                kwargs.get('card_name'),
+                kwargs.get('address_name')
             )
             self.pr.register_step3()
             self.pr.register_step4(
@@ -52,19 +58,4 @@ class TestRegister(pg.unittest.TestCase):
         except Exception as e:
             self.pr.img_screen('register')
             pg.log.error('注册异常：' + str(e))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+            raise

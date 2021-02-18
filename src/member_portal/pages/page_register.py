@@ -2,9 +2,10 @@ from common.base_page import BasePage
 from selenium.webdriver.common.by import By
 import time
 
-# # https://stag-crm-member-2.tm-nonprod.com/register?register_type=demo
+
 class PageRegister(BasePage):
     register_bt = (By.XPATH, "//a[text()='sign up']")
+    step_4_scroll_bt = (By.XPATH, '//*[@id="app"]/div/section/main/section/div[4]/div')
     # step1
     first_name_input = (By.XPATH, "//input[@aria-label='First Name-en *']")
     middle_name_input = (By.XPATH, "//input[@aria-label='Middle Name-en']")
@@ -12,6 +13,7 @@ class PageRegister(BasePage):
     email_input = (By.XPATH, "//input[@aria-label='Email *']")
     mobile_input = (By.XPATH, "//input[@aria-label='Mobile Number *']")
     pwd_input = (By.XPATH, "//input[@aria-label='Client Portal Password']")
+    pwd_2_input = (By.XPATH, "//input[@aria-label='Confirm Password']")
     yzm = (By.XPATH, "//*[@id='nc_1_n1z']")
     yzm_back = (By.XPATH, '//*[@id="nc_1__scale_text"]/span')
     next1 = (By.XPATH, "//*[@id='app']/div/section/div[2]/div/div[3]/button")
@@ -32,13 +34,18 @@ class PageRegister(BasePage):
     # crm配置开启认证才有
     # ------------------------------------------------------------------------------
     electronic_select = (By.XPATH, "//*[@id='app']/div/section/main/section/div[2]/div[2]/section/div[2]/div/div/div[2]/form/div[2]/label/div")
-    electronic_select_value = (By.XPATH, "//*[text()='Australian Driving Licence']")
+    electronic_select_value = (By.XPATH, "/html/body/div[5]/div[2]/div[6]/div[2]/div")
     id_number_input = (By.XPATH, "//input[@aria-label='ID Number *']")
     title_select = (By.XPATH, '//*[@id="app"]/div/section/main/section/div[2]/div[2]/section/div[2]/div/div/div[2]/form/div[2]/label[3]/div')
     title_select_value = (By.XPATH, "//*[text()='Mr.']")
-    driver_state_input = (By.XPATH, "//input[@aria-label='Drive State *']")
+    first_input = (By.XPATH, "//input[@aria-label='First Name *']")
+    last_input = (By.XPATH, "//input[@aria-label='Last Name *']")
     # ------------------------------------------------------------------------------
-    next2 = (By.XPATH, '//*[@id="app"]/div/section/main/section/div[2]/div[2]/section/div[2]/div/div/div[2]/div/button')
+    # next2 = (By.XPATH, '//*[@id="app"]/div/section/main/section/div[2]/div[2]/section/div[2]/div/div/div[2]/div/button')
+    next2 = (By.XPATH, "//div[text()='Questionnaire']")
+    upload_id = (By.XPATH, '//*[@id="app"]/div/section/main/section/div[2]/div[2]/section/div[2]/div/div/div[2]/form/div[2]/div[3]/div[1]/div/div/div/div')
+    upload_proof = (By.XPATH, '//*[@id="app"]/div/section/main/section/div[2]/div[2]/section/div[2]/div/div/div[2]/form/div[2]/div[3]/div[3]/div/div/div/div')
+    id_card_input = (By.XPATH, '//*[@id="app"]/div/section/main/section/div[2]/div[2]/section/div[2]/div/div/div[2]/form/div[2]/div[3]/div[1]/div/div/div/input')
 
     # step3
     question1_checkbox = (By.XPATH, '//*[@id="app"]/div/section/main/section/div[2]/div[2]/section/div[2]/div/div/div[3]/form/div/div[2]/div/div[1]/div[1]/div')
@@ -49,7 +56,8 @@ class PageRegister(BasePage):
     currency_select_value = (By.XPATH, "//*[text()='AUD']")
     leverage_select = (By.XPATH, '//*[@id="app"]/div/section/main/section/div[2]/div[2]/section/div[2]/div/div/div[4]/form/div[2]/label/div')
     leverage_select_value = (By.XPATH, "//*[text()='1:10']")
-    investor_password = (By.XPATH, "//input[@aria-label='Investor Password']")
+    investor_password = (By.XPATH, "//input[@aria-label='Investor Password *']")
+    investor_2_password = (By.XPATH, "/html/body/div[4]/div/section/main/section/div[2]/div[2]/section/div[2]/div/div/div[4]/form/div[4]/div[2]/label/div/div[1]/div[1]/input")
     auth1 = (By.XPATH, '//*[@id="app"]/div/section/main/section/div[2]/div[2]/section/div[2]/div/div/div[4]/form/div[7]/div[1]/div[1]/div')
     auth2 = (By.XPATH, '//*[@id="app"]/div/section/main/section/div[2]/div[2]/section/div[2]/div/div/div[4]/form/div[7]/div[2]/div[1]/div')
     submit = (By.XPATH, '//*[text()="SUBMIT"]')
@@ -68,12 +76,13 @@ class PageRegister(BasePage):
     deposit_select = (By.XPATH, '//*[@id="app"]/div/section/main/section/div[2]/div[2]/section/div[2]/form/div[4]/div[2]/label/div/div/div[1]')
     deposit_select_value = (By.XPATH, '//*[text()="1500.22"]')
     td_pwd = (By.XPATH, '//*[@aria-label="Password *"]')
+    td_2_pwd = (By.XPATH, '//*[@aria-label="Confirm Password"]')
     demo_submit = (By.XPATH, '//div[text()="SUBMIT"]')
 
     def go_to_register(self):
         self.find_element(*self.register_bt).click()
         self.log.info('点击【注册】按钮')
-        time.sleep(1)
+        time.sleep(2.2)
 
     def register_step1(self, fn, mn, ln, email, phone, pwd):
         self.send_keys(fn, *self.first_name_input)
@@ -89,15 +98,17 @@ class PageRegister(BasePage):
         self.log.info('输入phone：' + phone)
         self.send_keys(pwd, *self.pwd_input)
         self.log.info('输入pwd：' + pwd)
+        self.send_keys(pwd, *self.pwd_2_input)
+        self.log.info('输入确认密码：' + pwd)
         time.sleep(0.8)
         self.move_yzm(self.yzm, self.yzm_back)
         self.log.info('滑动验证码')
         time.sleep(0.8)
         self.find_element(*self.next1).click()
         self.log.info('点击step1【下一步】按钮')
-        time.sleep(5)
+        time.sleep(15)
 
-    def register_step2(self, address, city, state, postcode):
+    def register_step2(self, address, city, state, postcode, id_number, first_name, last_name, id_card_name, address_n):
         self.find_element(*self.birth_input_button).click()
         # self.move_to_element_click(*self.birth_input_button)
         time.sleep(0.2)
@@ -121,9 +132,43 @@ class PageRegister(BasePage):
         self.log.info('输入postcode：' + postcode)
         self.select_value_click(self.gender_select, self.gender_select_value)
         self.log.info('选择gender en： Mail')
+        self.select_value_click(self.electronic_select, self.electronic_select_value)
+        self.log.info('选择电子身份证： 中国身份证')
+        self.send_keys(id_number, *self.id_number_input)
+        self.log.info('输入id_number：' + id_number)
+        self.select_value_click(self.title_select, self.title_select_value)
+        self.log.info('选择 title： Mr.')
+        self.send_keys(first_name, *self.first_input)
+        self.log.info('输入first_name：' + first_name)
+        self.send_keys(last_name, *self.last_input)
+        self.log.info('输入last_name：' + last_name)
         self.find_element(*self.next2).click()
         self.log.info('点击step2【下一步】按钮')
-        time.sleep(2.2)
+        # 验证 身份证 信息， 等待时间要长一点
+        time.sleep(10)
+        # 需要滑动 滚动条  通过按键盘↓实现
+        self.enter_down_key(10)
+        time.sleep(18)
+        # self.find_element(*self.upload_id).click()
+        # time.sleep(0.8)
+        # time.sleep(2)
+        # --------------------- 上传文件 --------------------------------------
+        # self.log.info('点击【上传身份证】按钮')
+        # self.upload_file(id_card_name)
+        # self.log.info('上传文件: ' + id_card_name)
+        # -----------------------------------------------------------
+        self.log.info('【上传文件前】')
+        self.send_keys(r'E:\projects\QA-CRMAutomated-UI\data\image\id_card.jpg', *self.id_card_input)
+        self.log.info('【上传文件后】')
+        time.sleep(2)
+        # self.find_element(*self.upload_proof).click()
+        # self.log.info('点击【上传address】按钮')
+        # self.upload_file(address_n)
+        # self.log.info('上传文件: ' + address_n)
+        # time.sleep(1)
+        self.find_element(*self.next2).click()
+        self.log.info('点击step2【下一步】按钮')
+        time.sleep(3)
 
     def register_step3(self):
         self.find_element(*self.question1_checkbox).click()
@@ -139,7 +184,10 @@ class PageRegister(BasePage):
         self.log.info('选择 leverage： 1:10')
         self.send_keys(investor_password, *self.investor_password)
         self.log.info('输入 investor_password：' + investor_password)
-        self.scroll_window()
+        self.send_keys(investor_password, *self.investor_2_password)
+        self.log.info('输入确认 investor_password：' + investor_password)
+        self.custom_scroll_window(*self.step_4_scroll_bt, y=500)
+        time.sleep(2)
         self.log.info('移动Y轴滚动条到页面底部')
         self.find_element(*self.auth1).click()
         self.log.info('点击【复选框1】按钮')
@@ -162,9 +210,11 @@ class PageRegister(BasePage):
         self.log.info('选择 deposit')
         self.send_keys(pwd, *self.td_pwd)
         self.log.info('输入交易密码：' + pwd)
+        self.send_keys(pwd, *self.td_2_pwd)
+        self.log.info('输入2次密码：' + pwd)
         self.find_element(*self.demo_submit).click()
         self.log.info('点击【submit】按钮')
-        time.sleep(5)
+        time.sleep(6)
 
     def get_title(self):
         title = self.driver.title

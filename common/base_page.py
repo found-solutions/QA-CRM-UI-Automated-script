@@ -2,11 +2,15 @@ from selenium.webdriver.support.wait import WebDriverWait
 import selenium.webdriver.support.expected_conditions as EC
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.keys import Keys
 from common.logs import MyLog
 from all_path import Paths
 from read_config import ReadConfig
+from common.operate_file import find_file_abspath
 import os
 import time
+import win32gui
+import win32con
 
 
 class BasePage(object):
@@ -36,7 +40,7 @@ class BasePage(object):
                 self.driver.get(url_type)
                 self.log.info('打开测试网址成功：' + str(url_type))
             self.driver.maximize_window()
-            self.driver.implicitly_wait(15)
+            self.driver.implicitly_wait(20)
         except:
             self.log.error("未能正确打开页面：{}".format(url_type))
             raise
@@ -100,7 +104,7 @@ class BasePage(object):
     def select_value_click(self, a, b):
         try:
             self.find_element(*a).click()
-            time.sleep(0.3)
+            time.sleep(0.5)
             self.find_element(*b).click()
             time.sleep(0.3)
         except:
@@ -127,7 +131,7 @@ class BasePage(object):
 
     def scroll_window(self, y=10000):
         """
-        移动浏览器滚动条到窗口指定位置
+        移动浏览器滚动条到窗口指定位置 -- 浏览器自带的滚动条
         :param y:  指定位置，默认滚动到浏览器底部
         :return: None
         """
@@ -135,7 +139,58 @@ class BasePage(object):
             js = 'document.documentElement.scrollTop={}'.format(y)
             self.driver.excute_script(js)
         except Exception as e:
-            self.log.error('浏览器滚动条滚动失败[位置：{}]：{}'.format(y, str(e)))
+            self.log.error('【浏览器滚动条】滚动失败[位置：{}]：{}'.format(y, str(e)))
 
+    def upload_file(self, name):
+        """
+        windows上传文件文件窗口处理
+        :param name:  需要上传的文件名称
+        :return:
+        """
+        try:
+            # exe_path = os.path.join(os.path.dirname(__file__), 'upload_file.exe')
+            # command = '{} {}'.format(exe_path, find_file_abspath('data', name))
+            # print('命令：', command)
+            # os.system(command)
 
+            dialog = win32gui.FindWindow("#32770", "打开")
+            comboxex32 = win32gui.FindWindowEx(dialog, 0, "ComboBoxEx32", None)
+            combox = win32gui.FindWindowEx(comboxex32, 0, "ComboBox", None)
+            edit = win32gui.FindWindowEx(combox, 0, "Edit", None)
+            button = win32gui.FindWindowEx(dialog, 0, "Button", "打开(&0)")
+            win32gui.SendMessage(edit, win32con.WM_SETTEXT, None, find_file_abspath('data', name))
+            win32gui.SendMessage(dialog, win32con.WM_COMMAND, 1, button)
+        except Exception as e:
+            self.log.error('上传文件【{}】失败：{}'.format(name, str(e)))
+            raise
 
+    def custom_scroll_window(self, *loc, y=100):
+        """
+        移动浏览器滚动条到窗口指定位置 -- 自定义的滚动条
+        :param y: 位置
+        :return:
+        """
+        try:
+            action = ActionChains(self.driver)
+            scroll_bar = self.find_element(*loc)
+            action.move_to_element(scroll_bar)
+            action.click_and_hold()
+            action.move_by_offset(0, y)
+            action.release()
+            action.perform()
+        except Exception as e:
+            self.log.error('移动页面【自定义的滚动条】失败：' + str(e))
+
+    def enter_down_key(self, n):
+        """
+        通过按键  ↓  实现滚动条滚动
+        :param n: 按键次数
+        :return:
+        """
+        try:
+            ac = ActionChains(self.driver)
+            for _ in range(n):
+                ac.key_down(Keys.DOWN).perform()
+                time.sleep(0.2)
+        except Exception as e:
+            self.log.error('键盘↓按失败：' + str(e))

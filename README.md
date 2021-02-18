@@ -1,1 +1,11 @@
 # QA-CRM-UI-Automated-script
+    - common            全局公共方法，公共exe文件
+    - data              用例数据
+    - error_img         错误截图
+    - logs              日志文件
+    - report            测试报告
+    - src               page and cases
+    - all_path.py       全局路径
+    - config.ini        公共数据配置
+    - read_config.py    读取公共数据
+    - run.py            只用全部用例方法

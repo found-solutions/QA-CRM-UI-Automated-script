@@ -72,9 +72,9 @@ def ssh_server():
     config_path = os.path.join(file_path, 'private_key')
 
     # 创建ssh连接
-    ssh_host = ReadConfig().get_mysql('ssh_address')
-    ssh_port = ReadConfig().get_mysql('ssh_port')
-    ssh_user = ReadConfig().get_mysql('ssh_user')
+    ssh_host = ReadConfig().get_ssh('ssh_address')
+    ssh_port = ReadConfig().get_ssh('ssh_port')
+    ssh_user = ReadConfig().get_ssh('ssh_user')
     # 用密码访问
     # ssh_password = read_config('projectname', 'ssh_password')
     # 用密钥访问
@@ -168,6 +168,6 @@ def db(sql):
 
 
 if __name__ == '__main__':
-    sql1 = "SELECT external_id FROM trading_accounts where id = 133500"
+    sql1 = "SELECT * FROM users where email like 'uiauto%'"
     res1 = db(sql1)
     print(res1)

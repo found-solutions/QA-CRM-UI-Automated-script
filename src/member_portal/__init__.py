@@ -2,7 +2,7 @@ from common.operate_file import ExcelUtil
 from read_config import ReadConfig
 from selenium import webdriver
 from common.logs import MyLog
-# from common.my_db import db
+from common.my_db import db
 from all_path import Paths
 import unittest
 import time
@@ -19,3 +19,4 @@ log = MyLog.my_log().get_logger()
 selenium_option = webdriver.ChromeOptions()
 selenium_option.add_argument('headless')
 selenium_option.add_argument('--disable-gpu')
+selenium_option.add_argument("--window-size=2560,1440")
