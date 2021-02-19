@@ -16,5 +16,6 @@ class Paths:
 
 
 if __name__ == '__main__':
-    p = Paths.error_img
-    print(p)
+    # p = Paths.error_img
+    # print(p)
+    pass

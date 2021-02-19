@@ -24,22 +24,24 @@ class TestRegisterDemo(pg.unittest.TestCase):
             pg.db(self.sql.format(self.email))
         pg.log.info('********** test end register demo ********** \n')
 
-    @pg.ddt.data(*pg.ExcelUtil('register.xlsx').dict_data())
+    @pg.ddt.data(*pg.ExcelUtil('register_demo.xlsx').dict_data())
     @pg.ddt.unpack
     def test_register_demo(self, **kwargs):
         try:
-            self.sql = kwargs.get('sql')
+            self.sql = kwargs.get('sql', None)
             self.email = kwargs.get('email')
+            self.country = kwargs.get('country')
             self.pr.register_step1(
                 kwargs.get('first_name'),
                 kwargs.get('middle_name'),
                 kwargs.get('last_name'),
                 kwargs.get('email'),
+                self.country,
                 kwargs.get('phone'),
                 kwargs.get('password')
             )
             pg.time.sleep(5)
-            self.pr.register_demo_step2(kwargs.get('password'))
+            self.pr.register_demo_step2(kwargs.get('investor_password'), self.country)
             self.assertIn(kwargs.get('expect'), self.pr.get_title())
             pg.log.info('{}: 断言成功'.format(kwargs.get('desc')))
         except Exception as e:

@@ -11,9 +11,12 @@ class PageRegister(BasePage):
     middle_name_input = (By.XPATH, "//input[@aria-label='Middle Name-en']")
     last_name_input = (By.XPATH, "//input[@aria-label='Last Name-en *']")
     email_input = (By.XPATH, "//input[@aria-label='Email *']")
+    country_select = (By.XPATH, '//*[@id="app"]/div/section/div[2]/div/div[2]/form/label[5]/div/div[1]/div[3]/i')
+    country_select_value = (By.XPATH, '//div[text()="{}"]')
+
     mobile_input = (By.XPATH, "//input[@aria-label='Mobile Number *']")
-    pwd_input = (By.XPATH, "//input[@aria-label='Client Portal Password']")
-    pwd_2_input = (By.XPATH, "//input[@aria-label='Confirm Password']")
+    pwd_input = (By.XPATH, "/html/body/div[4]/div/section/div[2]/div/div[2]/form/label[8]/div/div[1]/div[1]/input")
+    pwd_2_input = (By.XPATH, "/html/body/div[4]/div/section/div[2]/div/div[2]/form/label[9]/div/div[1]/div[1]/input")
     yzm = (By.XPATH, "//*[@id='nc_1_n1z']")
     yzm_back = (By.XPATH, '//*[@id="nc_1__scale_text"]/span')
     next1 = (By.XPATH, "//*[@id='app']/div/section/div[2]/div/div[3]/button")
@@ -42,7 +45,7 @@ class PageRegister(BasePage):
     last_input = (By.XPATH, "//input[@aria-label='Last Name *']")
     # ------------------------------------------------------------------------------
     # next2 = (By.XPATH, '//*[@id="app"]/div/section/main/section/div[2]/div[2]/section/div[2]/div/div/div[2]/div/button')
-    next2 = (By.XPATH, "//div[text()='Questionnaire']")
+    next2 = (By.XPATH, '//*[@id="app"]/div/section/main/section/div[2]/div[2]/section/div[2]/div/div/div[2]/div/button')
     upload_id = (By.XPATH, '//*[@id="app"]/div/section/main/section/div[2]/div[2]/section/div[2]/div/div/div[2]/form/div[2]/div[3]/div[1]/div/div/div/div')
     upload_proof = (By.XPATH, '//*[@id="app"]/div/section/main/section/div[2]/div[2]/section/div[2]/div/div/div[2]/form/div[2]/div[3]/div[3]/div/div/div/div')
     id_card_input = (By.XPATH, '//*[@id="app"]/div/section/main/section/div[2]/div[2]/section/div[2]/div/div/div[2]/form/div[2]/div[3]/div[1]/div/div/div/input')
@@ -72,19 +75,20 @@ class PageRegister(BasePage):
     account_leverage_select = (By.XPATH, '//*[@id="app"]/div/section/main/section/div[2]/div[2]/section/div[2]/form/div[3]/label/div/div/div[1]')
     account_leverage_select_value = (By.XPATH, '//*[text()="1:10"]')
     account_currency_select = (By.XPATH, '//*[@id="app"]/div/section/main/section/div[2]/div[2]/section/div[2]/form/div[4]/div[1]/label/div/div/div[1]')
-    account_currency_select_value = (By.XPATH, '//*[text()="USD"]')
+    account_currency_select_value = (By.XPATH, '//*[text()="AUD"]')
     deposit_select = (By.XPATH, '//*[@id="app"]/div/section/main/section/div[2]/div[2]/section/div[2]/form/div[4]/div[2]/label/div/div/div[1]')
     deposit_select_value = (By.XPATH, '//*[text()="1500.22"]')
     td_pwd = (By.XPATH, '//*[@aria-label="Password *"]')
     td_2_pwd = (By.XPATH, '//*[@aria-label="Confirm Password"]')
     demo_submit = (By.XPATH, '//div[text()="SUBMIT"]')
+    taiwan_tip = (By.XPATH, "/html/body/div[5]/p")
 
     def go_to_register(self):
         self.find_element(*self.register_bt).click()
         self.log.info('点击【注册】按钮')
         time.sleep(2.2)
 
-    def register_step1(self, fn, mn, ln, email, phone, pwd):
+    def register_step1(self, fn, mn, ln, email, country, phone, pwd):
         self.send_keys(fn, *self.first_name_input)
         self.log.info('输入first name：' + fn)
         self.send_keys(mn, *self.middle_name_input)
@@ -93,7 +97,12 @@ class PageRegister(BasePage):
         self.log.info('输入last name：' + ln)
         self.send_keys(email, *self.email_input)
         self.log.info('输入email：' + email)
-        self.log.info('123输入phone：' + phone)
+        # ----------------------- 选择指定名称的国家 -----------------------------
+        c = list(self.country_select_value)
+        c[1] = c.__getitem__(1).format(country)
+        self.select_value_click(self.country_select, tuple(c))
+        self.log.info('选择国家：' + country)
+        # ---------------------------------------------------------------------
         self.send_keys(phone, *self.mobile_input)
         self.log.info('输入phone：' + phone)
         self.send_keys(pwd, *self.pwd_input)
@@ -108,9 +117,8 @@ class PageRegister(BasePage):
         self.log.info('点击step1【下一步】按钮')
         time.sleep(15)
 
-    def register_step2(self, address, city, state, postcode, id_number, first_name, last_name, id_card_name, address_n):
+    def register_step2(self, address, city, state, postcode, id_number, first_name, last_name, id_card_name, c):
         self.find_element(*self.birth_input_button).click()
-        # self.move_to_element_click(*self.birth_input_button)
         time.sleep(0.2)
         self.log.info('点击birth日期控件')
         self.find_element(*self.year).click()
@@ -132,43 +140,35 @@ class PageRegister(BasePage):
         self.log.info('输入postcode：' + postcode)
         self.select_value_click(self.gender_select, self.gender_select_value)
         self.log.info('选择gender en： Mail')
-        self.select_value_click(self.electronic_select, self.electronic_select_value)
-        self.log.info('选择电子身份证： 中国身份证')
-        self.send_keys(id_number, *self.id_number_input)
-        self.log.info('输入id_number：' + id_number)
-        self.select_value_click(self.title_select, self.title_select_value)
-        self.log.info('选择 title： Mr.')
-        self.send_keys(first_name, *self.first_input)
-        self.log.info('输入first_name：' + first_name)
-        self.send_keys(last_name, *self.last_input)
-        self.log.info('输入last_name：' + last_name)
+        # 通过国家判断是不是需要认证， 仅配置中国需要认证
+        if c == 'China':
+            self.select_value_click(self.electronic_select, self.electronic_select_value)
+            self.log.info('选择电子身份证： 中国身份证')
+            self.send_keys(id_number, *self.id_number_input)
+            self.log.info('输入id_number：' + id_number)
+            self.select_value_click(self.title_select, self.title_select_value)
+            self.log.info('选择 title： Mr.')
+            self.send_keys(first_name, *self.first_input)
+            self.log.info('输入first_name：' + first_name)
+            self.send_keys(last_name, *self.last_input)
+            self.log.info('输入last_name：' + last_name)
+            self.find_element(*self.next2).click()
+            self.log.info('点击step2【下一步】按钮')
+            # 验证 身份证 信息， 等待时间要长一点
+            time.sleep(10)
+            # 需要滑动 滚动条  通过按键盘↓实现
+            self.enter_down_key(10)
+            time.sleep(2)
+            # --------------------- 上传ID文件 --------------------------------------
+            self.find_element(*self.upload_id).click()
+            self.log.info('点击【上传身份证】按钮')
+            self.upload_file(id_card_name)
+            self.log.info('上传文件: ' + id_card_name)
+            # ---------------------------------------------------------------------
+            time.sleep(2)
         self.find_element(*self.next2).click()
         self.log.info('点击step2【下一步】按钮')
-        # 验证 身份证 信息， 等待时间要长一点
-        time.sleep(10)
-        # 需要滑动 滚动条  通过按键盘↓实现
-        self.enter_down_key(10)
-        time.sleep(18)
-        # self.find_element(*self.upload_id).click()
-        # time.sleep(0.8)
-        # time.sleep(2)
-        # --------------------- 上传文件 --------------------------------------
-        # self.log.info('点击【上传身份证】按钮')
-        # self.upload_file(id_card_name)
-        # self.log.info('上传文件: ' + id_card_name)
-        # -----------------------------------------------------------
-        self.log.info('【上传文件前】')
-        self.send_keys(r'E:\projects\QA-CRMAutomated-UI\data\image\id_card.jpg', *self.id_card_input)
-        self.log.info('【上传文件后】')
-        time.sleep(2)
-        # self.find_element(*self.upload_proof).click()
-        # self.log.info('点击【上传address】按钮')
-        # self.upload_file(address_n)
-        # self.log.info('上传文件: ' + address_n)
-        # time.sleep(1)
-        self.find_element(*self.next2).click()
-        self.log.info('点击step2【下一步】按钮')
-        time.sleep(3)
+        time.sleep(6)
 
     def register_step3(self):
         self.find_element(*self.question1_checkbox).click()
@@ -197,25 +197,37 @@ class PageRegister(BasePage):
         self.log.info('点击【提交】按钮')
         time.sleep(5)
 
-    def register_demo_step2(self, pwd):
-        self.select_value_click(self.ts_select, self.ts_select_value)
-        self.log.info('选择 ts')
-        self.select_value_click(self.account_type_select, self.account_type_select_value)
-        self.log.info('选择 account_type')
-        self.select_value_click(self.account_leverage_select, self.account_leverage_select_value)
-        self.log.info('选择 account_leverage')
-        self.select_value_click(self.account_currency_select, self.account_currency_select_value)
-        self.log.info('选择 account_currency')
-        self.select_value_click(self.deposit_select, self.deposit_select_value)
-        self.log.info('选择 deposit')
+    def register_demo_step2(self, pwd, country):
+        """
+        xxx
+        :param pwd:
+        :param country: 当前注册的国家 用于区分在crm后台是否配置了默认选项
+        :return:
+        """
+        if country == 'China':
+            self.select_value_click(self.ts_select, self.ts_select_value)
+            self.log.info('选择 ts')
+            self.select_value_click(self.account_type_select, self.account_type_select_value)
+            self.log.info('选择 account_type')
+            self.select_value_click(self.account_leverage_select, self.account_leverage_select_value)
+            self.log.info('选择 account_leverage')
+            self.select_value_click(self.account_currency_select, self.account_currency_select_value)
+            self.log.info('选择 account_currency')
+            self.select_value_click(self.deposit_select, self.deposit_select_value)
+            self.log.info('选择 deposit')
         self.send_keys(pwd, *self.td_pwd)
         self.log.info('输入交易密码：' + pwd)
         self.send_keys(pwd, *self.td_2_pwd)
         self.log.info('输入2次密码：' + pwd)
+        time.sleep(0.8)
         self.find_element(*self.demo_submit).click()
         self.log.info('点击【submit】按钮')
-        time.sleep(6)
+        time.sleep(8)
 
     def get_title(self):
         title = self.driver.title
         return title
+
+    def get_taiwan_tip(self):
+        t = self.find_element(*self.taiwan_tip).text
+        return t

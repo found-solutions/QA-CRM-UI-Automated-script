@@ -6,7 +6,7 @@ import os
 
 def find_case():
     member_case_path = os.path.join(Paths.cases, 'member_portal', 'cases')
-    admin_case_path = os.path.join(Paths.cases, 'admin_portal', 'cases')
+    # admin_case_path = os.path.join(Paths.cases, 'admin_portal', 'cases')
     tests = unittest.TestSuite()
     member_cases = unittest.defaultTestLoader.discover(member_case_path, top_level_dir=member_case_path)
     # admin_cases = unittest.defaultTestLoader.discover(admin_case_path, top_level_dir=admin_case_path)

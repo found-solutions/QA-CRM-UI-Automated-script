@@ -26,15 +26,19 @@ class TestRegister(pg.unittest.TestCase):
     @pg.ddt.data(*pg.ExcelUtil('register.xlsx').dict_data())
     @pg.ddt.unpack
     def test_register(self, **kwargs):
+        if int(kwargs.get('case_no')) != 3:
+            return
         try:
-            self.sql = kwargs.get('sql', 0)
+            self.sql = kwargs.get('sql', None)
             self.email = kwargs.get('email', 0)
+            country = kwargs.get('country', None)
             self.pr.go_to_register()
             self.pr.register_step1(
                 kwargs.get('first_name'),
                 kwargs.get('middle_name'),
                 kwargs.get('last_name'),
                 kwargs.get('email'),
+                country,
                 kwargs.get('phone'),
                 kwargs.get('password')
             )
@@ -47,15 +51,23 @@ class TestRegister(pg.unittest.TestCase):
                 kwargs.get('f_name'),
                 kwargs.get('l_name'),
                 kwargs.get('card_name'),
-                kwargs.get('address_name')
+                country
             )
-            self.pr.register_step3()
-            self.pr.register_step4(
-                kwargs.get('investor_password')
-            )
-            self.assertIn(kwargs.get('expect'), self.pr.get_title())
-            pg.log.info('{}: 断言成功'.format(kwargs.get('desc')))
+            if country == 'Taiwan':
+                self.assertIn(kwargs.get('expect'), self.pr.get_taiwan_tip())
+                pg.log.info('{}: 断言成功'.format(kwargs.get('desc')))
+            else:
+                self.pr.register_step3()
+                self.pr.register_step4(
+                    kwargs.get('investor_password')
+                )
+                self.assertIn(kwargs.get('expect'), self.pr.get_title())
+                pg.log.info('{}: 断言成功'.format(kwargs.get('desc')))
         except Exception as e:
             self.pr.img_screen('register')
             pg.log.error('注册异常：' + str(e))
             raise
+
+    def test_step_1_register(self):
+        # 需要重新加一个 excel 文件 保存数据， 区分 ，：所有异常场景
+        pass
