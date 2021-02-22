@@ -29,7 +29,12 @@ class ExcelUtil:
         # 获取总列数
         self.colNum = self.table.ncols
 
-    def dict_data(self):
+    def dict_data(self, case_no=None):
+        """
+        pass
+        :param case_no:  指定执行用例的 case no
+        :return:
+        """
         if self.rowNum <= 1:
             print("总行数小于1")
         else:
@@ -42,6 +47,12 @@ class ExcelUtil:
                     s[self.keys[x]] = values[x]
                 r.append(s)
                 j += 1
+            if case_no:
+                try:
+                    return r[case_no-1:case_no]
+                except Exception as e:
+                    print('case_no不存在：', str(e))
+                    raise
             return r
 
 

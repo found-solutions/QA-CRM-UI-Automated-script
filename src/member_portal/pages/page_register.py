@@ -15,11 +15,16 @@ class PageRegister(BasePage):
     country_select_value = (By.XPATH, '//div[text()="{}"]')
 
     mobile_input = (By.XPATH, "//input[@aria-label='Mobile Number *']")
-    pwd_input = (By.XPATH, "/html/body/div[4]/div/section/div[2]/div/div[2]/form/label[8]/div/div[1]/div[1]/input")
-    pwd_2_input = (By.XPATH, "/html/body/div[4]/div/section/div[2]/div/div[2]/form/label[9]/div/div[1]/div[1]/input")
+    pwd_input = (By.XPATH, "//input[@aria-label='Client Portal Password *']")
+    pwd_2_input = (By.XPATH, "//input[@aria-label='Confirm Password *']")
     yzm = (By.XPATH, "//*[@id='nc_1_n1z']")
     yzm_back = (By.XPATH, '//*[@id="nc_1__scale_text"]/span')
     next1 = (By.XPATH, "//*[@id='app']/div/section/div[2]/div/div[3]/button")
+
+    # 异常场景各种提示tip
+    blacklist_country_tip = (By.XPATH, '//*[@id="app"]/div/section/div[2]/div/div[2]/form/label[5]/div/div[2]/div/div')
+    email_tip = (By.XPATH, '//*[@id="app"]/div/section/div[2]/div/div[2]/form/label[4]/div/div[2]/div/div')
+    password_tip = (By.XPATH, '//*[@id="app"]/div/section/div[2]/div/div[2]/form/label[8]/div/div[2]/div/div')
 
     # step2
     birth_input_button = (By.XPATH, "//input[@aria-label='Date of Birth *']")
@@ -55,17 +60,21 @@ class PageRegister(BasePage):
     next3 = (By.XPATH, '//*[@id="app"]/div/section/main/section/div[2]/div[2]/section/div[2]/div/div/div[3]/div/button')
 
     # step4
-    currency_select = (By.XPATH, '//*[@id="app"]/div/section/main/section/div[2]/div[2]/section/div[2]/div/div/div[4]/form/div[1]/div/div[3]/label/div')
-    currency_select_value = (By.XPATH, "//*[text()='AUD']")
+    # account_type_select1 =
+    currency_select = (By.XPATH, '//*[@id="app"]/div/section/main/section/div[2]/div[2]/section/div[2]/div/div/div[4]/form/div[1]/div/div[2]/label/div')
+    currency_select_value = (By.XPATH, "//*[text()='USD']")
     leverage_select = (By.XPATH, '//*[@id="app"]/div/section/main/section/div[2]/div[2]/section/div[2]/div/div/div[4]/form/div[2]/label/div')
     leverage_select_value = (By.XPATH, "//*[text()='1:10']")
+    trade_password = (By.XPATH, "//input[@aria-label='Password *']")
+    trade_2_password = (By.XPATH, '//*[@id="app"]/div/section/main/section/div[2]/div[2]/section/div[2]/div/div/div[4]/form/div[3]/div[1]/label/div/div[1]/div[1]/input')
     investor_password = (By.XPATH, "//input[@aria-label='Investor Password *']")
-    investor_2_password = (By.XPATH, "/html/body/div[4]/div/section/main/section/div[2]/div[2]/section/div[2]/div/div/div[4]/form/div[4]/div[2]/label/div/div[1]/div[1]/input")
+    investor_2_password = (By.XPATH, "//*[@id='app']/div/section/main/section/div[2]/div[2]/section/div[2]/div/div/div[4]/form/div[4]/div[2]/label/div/div[1]/div[1]/input")
+    note_input = (By.XPATH, '//*[@id="app"]/div/section/main/section/div[2]/div[2]/section/div[2]/div/div/div[4]/form/div[5]/label/div/div/div/input')
     auth1 = (By.XPATH, '//*[@id="app"]/div/section/main/section/div[2]/div[2]/section/div[2]/div/div/div[4]/form/div[7]/div[1]/div[1]/div')
     auth2 = (By.XPATH, '//*[@id="app"]/div/section/main/section/div[2]/div[2]/section/div[2]/div/div/div[4]/form/div[7]/div[2]/div[1]/div')
     submit = (By.XPATH, '//*[text()="SUBMIT"]')
 
-    # demo step2
+    # demo step2 /html/body/div[4]/div/section/main/section/div[2]/div[2]/section/div[2]/div/div/div[4]/form/div[3]/div[1]/label/div/div[1]/div[1]/input
     ts_select = (By.XPATH, '//*[@id="app"]/div/section/main/section/div[2]/div[2]/section/div[2]/form/div[1]/label/div')
     # Trading Server-en *
     ts_select_value = (By.XPATH, '//*[text()="MT4 demo-tm_demo_demo_ts"]')
@@ -81,14 +90,32 @@ class PageRegister(BasePage):
     td_pwd = (By.XPATH, '//*[@aria-label="Password *"]')
     td_2_pwd = (By.XPATH, '//*[@aria-label="Confirm Password"]')
     demo_submit = (By.XPATH, '//div[text()="SUBMIT"]')
-    taiwan_tip = (By.XPATH, "/html/body/div[5]/p")
+    tips = (By.XPATH, "/html/body/div[5]/p")
+
+    # 首页两个按钮 关闭弹窗 跳转注册完善资料
+    close_pop_window_button = (By.XPATH, "//button[text()='CLOSE']")
+    continue_button = (By.XPATH, "//button[text()='CONTINUE']")
+    progress = (By.XPATH, '//*[@id="app"]/div/section/main/section/div[2]/div[2]/section/div[2]/div/div/div[1]/div[3]/span[2]')
 
     def go_to_register(self):
         self.find_element(*self.register_bt).click()
         self.log.info('点击【注册】按钮')
         time.sleep(2.2)
 
-    def register_step1(self, fn, mn, ln, email, country, phone, pwd):
+    def register_step1(self, fn, mn, ln, email, country, phone, pwd, is_submit=1, sleep=15):
+        """
+        pass
+        :param fn:
+        :param mn:
+        :param ln:
+        :param email:
+        :param country:
+        :param phone:
+        :param pwd:
+        :param is_submit:  用于判断是否需要滑动验证码和点击下一步按钮，第一步异常场景不需要点击下一步按钮
+        :param sleep: 点击 提交按钮 后， 休眠的时间， 默认 15S
+        :return:
+        """
         self.send_keys(fn, *self.first_name_input)
         self.log.info('输入first name：' + fn)
         self.send_keys(mn, *self.middle_name_input)
@@ -110,12 +137,14 @@ class PageRegister(BasePage):
         self.send_keys(pwd, *self.pwd_2_input)
         self.log.info('输入确认密码：' + pwd)
         time.sleep(0.8)
-        self.move_yzm(self.yzm, self.yzm_back)
-        self.log.info('滑动验证码')
-        time.sleep(0.8)
-        self.find_element(*self.next1).click()
-        self.log.info('点击step1【下一步】按钮')
-        time.sleep(15)
+        # 异常场景 是否需要 点击提交 按钮，
+        if is_submit == 1:
+            self.move_yzm(self.yzm, self.yzm_back)
+            self.log.info('滑动验证码')
+            time.sleep(0.8)
+            self.find_element(*self.next1).click()
+            self.log.info('点击step1【下一步】按钮')
+            time.sleep(sleep)
 
     def register_step2(self, address, city, state, postcode, id_number, first_name, last_name, id_card_name, c):
         self.find_element(*self.birth_input_button).click()
@@ -168,7 +197,6 @@ class PageRegister(BasePage):
             time.sleep(2)
         self.find_element(*self.next2).click()
         self.log.info('点击step2【下一步】按钮')
-        time.sleep(6)
 
     def register_step3(self):
         self.find_element(*self.question1_checkbox).click()
@@ -177,7 +205,12 @@ class PageRegister(BasePage):
         self.log.info('点击step3【下一步】按钮')
         time.sleep(2.2)
 
-    def register_step4(self, investor_password):
+    def register_step4(self, investor_password, c):
+        # if c == 'China':
+
+
+
+
         self.select_value_click(self.currency_select, self.currency_select_value)
         self.log.info('选择currency： USD')
         self.select_value_click(self.leverage_select, self.leverage_select_value)
@@ -228,6 +261,66 @@ class PageRegister(BasePage):
         title = self.driver.title
         return title
 
-    def get_taiwan_tip(self):
-        t = self.find_element(*self.taiwan_tip).text
+    def get_tip(self):
+        """
+        弹窗提示
+        :return:
+        """
+        t = self.find_element(*self.tips).text
         return t
+
+    def get_step1_button_status(self):
+        """
+        获取 注册 第一步 页面中 提交按钮的状态
+        :return:
+        """
+        t = self.find_element(*self.next1).get_attribute('disabled')
+        if t:
+            return t
+        return 0
+
+    def get_step2_button_status(self):
+        """
+        获取 注册 第二步 页面中 提交按钮的状态
+        :return:
+        """
+        t = self.find_element(*self.next2).get_attribute('disabled')
+        if t:
+            return t
+        return 0
+
+    def get_error_tip(self, n):
+        """
+         通过data文件中的flag列判断获取哪个tip的值  前端输入框校验错误信息
+        :param n:  自定义
+        :return:  获取的文本信息：：--> str
+        """
+        if n == 2:
+            t = self.find_element(*self.blacklist_country_tip).text
+            return t
+        elif n == 5:
+            t = self.find_element(*self.email_tip).text
+            return t
+        elif n == 7:
+            t = self.find_element(*self.password_tip).text
+            return t
+        else:
+            return 0
+
+    def get_progress(self):
+        """
+        获取 注册 页面的进度
+        :return:
+        """
+        p = self.find_element(*self.progress).text
+        return p
+
+    def close_pop_window_and_finish_info(self):
+        """
+        关闭首页的弹窗，并跳转 完善信息界面
+        :return:
+        """
+        self.find_element(*self.close_pop_window_button).click()
+        self.find_element(*self.continue_button).click()
+        time.sleep(2)
+
