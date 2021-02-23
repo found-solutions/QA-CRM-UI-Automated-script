@@ -11,6 +11,7 @@ import os
 import time
 import win32gui
 import win32con
+import random
 
 
 class BasePage(object):
@@ -148,18 +149,21 @@ class BasePage(object):
         :return:
         """
         try:
-            # exe_path = os.path.join(os.path.dirname(__file__), 'upload_file.exe')
-            # command = '{} {}'.format(exe_path, find_file_abspath('data', name))
-            # print('命令：', command)
-            # os.system(command)
-
-            dialog = win32gui.FindWindow("#32770", "打开")
-            comboxex32 = win32gui.FindWindowEx(dialog, 0, "ComboBoxEx32", None)
-            combox = win32gui.FindWindowEx(comboxex32, 0, "ComboBox", None)
-            edit = win32gui.FindWindowEx(combox, 0, "Edit", None)
-            button = win32gui.FindWindowEx(dialog, 0, "Button", "打开(&0)")
-            win32gui.SendMessage(edit, win32con.WM_SETTEXT, None, find_file_abspath('data', name))
-            win32gui.SendMessage(dialog, win32con.WM_COMMAND, 1, button)
+            if random.randint(0, 1):
+                exe_path = os.path.join(os.path.dirname(__file__), 'upload_file.exe')
+                self.log.info('exe path:: {}'.format(exe_path))
+                self.log.info('file path:: {}'.format(find_file_abspath('data', name)))
+                command = '{} {}'.format(exe_path, find_file_abspath('data', name))
+                print('命令：', command)
+                os.system(command)
+            else:
+                dialog = win32gui.FindWindow("#32770", "打开")
+                comboxex32 = win32gui.FindWindowEx(dialog, 0, "ComboBoxEx32", None)
+                combox = win32gui.FindWindowEx(comboxex32, 0, "ComboBox", None)
+                edit = win32gui.FindWindowEx(combox, 0, "Edit", None)
+                button = win32gui.FindWindowEx(dialog, 0, "Button", "打开(&0)")
+                win32gui.SendMessage(edit, win32con.WM_SETTEXT, None, find_file_abspath('data', name))
+                win32gui.SendMessage(dialog, win32con.WM_COMMAND, 1, button)
         except Exception as e:
             self.log.error('上传文件【{}】失败：{}'.format(name, str(e)))
             raise
@@ -180,6 +184,7 @@ class BasePage(object):
             action.perform()
         except Exception as e:
             self.log.error('移动页面【自定义的滚动条】失败：' + str(e))
+            raise
 
     def enter_down_key(self, n):
         """
@@ -194,3 +199,21 @@ class BasePage(object):
                 time.sleep(0.2)
         except Exception as e:
             self.log.error('键盘↓按失败：' + str(e))
+            raise
+
+    def move_to_element(self, *loc):
+        """
+        界面移动到指定元素 （需要移动滚动条的地方使用）
+        :param loc: 元素 的元组
+        :return:  None
+        """
+        try:
+            ac = ActionChains(self.driver)
+            # 自定义的 find element 方法 有判断元素是否可见 ，所以不能找到 不可见的元素 报错
+            # 需要使用 原始 查找元素方法
+            e = self.driver.find_element(*loc)
+            ac.move_to_element(e).perform()
+            time.sleep(0.8)
+        except Exception as e:
+            self.log.error('移动到【{}】元素失败：{}'.format(str(loc), str(e)))
+            raise

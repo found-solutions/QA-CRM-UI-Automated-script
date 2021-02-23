@@ -15,7 +15,8 @@ class PageRegister(BasePage):
     country_select_value = (By.XPATH, '//div[text()="{}"]')
 
     mobile_input = (By.XPATH, "//input[@aria-label='Mobile Number *']")
-    pwd_input = (By.XPATH, "//input[@aria-label='Client Portal Password *']")
+    # //*[@id="app"]/div/section/div[2]/div/div[2]/form/label[8]/div/div[1]/div[1]/input
+    pwd_input = (By.XPATH, '//*[@id="app"]/div/section/div[2]/div/div[2]/form/label[8]/div/div[1]/div[1]/input')
     pwd_2_input = (By.XPATH, "//input[@aria-label='Confirm Password *']")
     yzm = (By.XPATH, "//*[@id='nc_1_n1z']")
     yzm_back = (By.XPATH, '//*[@id="nc_1__scale_text"]/span')
@@ -60,13 +61,14 @@ class PageRegister(BasePage):
     next3 = (By.XPATH, '//*[@id="app"]/div/section/main/section/div[2]/div[2]/section/div[2]/div/div/div[3]/div/button')
 
     # step4
-    # account_type_select1 =
-    currency_select = (By.XPATH, '//*[@id="app"]/div/section/main/section/div[2]/div[2]/section/div[2]/div/div/div[4]/form/div[1]/div/div[2]/label/div')
+    account_type_select1 = (By.XPATH, '//*[@id="app"]/div/section/main/section/div[2]/div[2]/section/div[2]/div/div/div[4]/form/div[1]/div/div[2]/label/div')
+    account_type_select1_value = (By.XPATH, '//*[text()="fefe"]')
+    currency_select = (By.XPATH, '//*[@id="app"]/div/section/main/section/div[2]/div[2]/section/div[2]/div/div/div[4]/form/div[1]/div/div[3]/label/div')
     currency_select_value = (By.XPATH, "//*[text()='USD']")
     leverage_select = (By.XPATH, '//*[@id="app"]/div/section/main/section/div[2]/div[2]/section/div[2]/div/div/div[4]/form/div[2]/label/div')
     leverage_select_value = (By.XPATH, "//*[text()='1:10']")
     trade_password = (By.XPATH, "//input[@aria-label='Password *']")
-    trade_2_password = (By.XPATH, '//*[@id="app"]/div/section/main/section/div[2]/div[2]/section/div[2]/div/div/div[4]/form/div[3]/div[1]/label/div/div[1]/div[1]/input')
+    trade_2_password = (By.XPATH, '//*[@id="app"]/div/section/main/section/div[2]/div[2]/section/div[2]/div/div/div[4]/form/div[3]/div[2]/label/div/div[1]/div[1]/input')
     investor_password = (By.XPATH, "//input[@aria-label='Investor Password *']")
     investor_2_password = (By.XPATH, "//*[@id='app']/div/section/main/section/div[2]/div[2]/section/div[2]/div/div/div[4]/form/div[4]/div[2]/label/div/div[1]/div[1]/input")
     note_input = (By.XPATH, '//*[@id="app"]/div/section/main/section/div[2]/div[2]/section/div[2]/div/div/div[4]/form/div[5]/label/div/div/div/input')
@@ -74,7 +76,7 @@ class PageRegister(BasePage):
     auth2 = (By.XPATH, '//*[@id="app"]/div/section/main/section/div[2]/div[2]/section/div[2]/div/div/div[4]/form/div[7]/div[2]/div[1]/div')
     submit = (By.XPATH, '//*[text()="SUBMIT"]')
 
-    # demo step2 /html/body/div[4]/div/section/main/section/div[2]/div[2]/section/div[2]/div/div/div[4]/form/div[3]/div[1]/label/div/div[1]/div[1]/input
+    # demo step2
     ts_select = (By.XPATH, '//*[@id="app"]/div/section/main/section/div[2]/div[2]/section/div[2]/form/div[1]/label/div')
     # Trading Server-en *
     ts_select_value = (By.XPATH, '//*[text()="MT4 demo-tm_demo_demo_ts"]')
@@ -102,7 +104,7 @@ class PageRegister(BasePage):
         self.log.info('点击【注册】按钮')
         time.sleep(2.2)
 
-    def register_step1(self, fn, mn, ln, email, country, phone, pwd, is_submit=1, sleep=15):
+    def register_step1(self, fn, mn, ln, email, country, phone, pwd, is_submit=1, sleep=10):
         """
         pass
         :param fn:
@@ -205,22 +207,27 @@ class PageRegister(BasePage):
         self.log.info('点击step3【下一步】按钮')
         time.sleep(2.2)
 
-    def register_step4(self, investor_password, c):
-        # if c == 'China':
-
-
-
-
+    def register_step4(self, investor_password, trade_password, note, c):
+        if c == 'China':
+            self.select_value_click(self.account_type_select1, self.account_type_select1_value)
+            self.log.info('选择 第一个 account type：')
         self.select_value_click(self.currency_select, self.currency_select_value)
         self.log.info('选择currency： USD')
         self.select_value_click(self.leverage_select, self.leverage_select_value)
         self.log.info('选择 leverage： 1:10')
+        self.send_keys(trade_password, *self.trade_password)
+        self.log.info('输入 trade_password：' + trade_password)
+        self.send_keys(trade_password, *self.trade_2_password)
+        self.log.info('输入 trade_password：' + trade_password)
         self.send_keys(investor_password, *self.investor_password)
         self.log.info('输入 investor_password：' + investor_password)
         self.send_keys(investor_password, *self.investor_2_password)
         self.log.info('输入确认 investor_password：' + investor_password)
-        self.custom_scroll_window(*self.step_4_scroll_bt, y=500)
-        time.sleep(2)
+        self.send_keys(note, *self.note_input)
+        self.log.info('输入 note：' + note)
+        time.sleep(1)
+        self.move_to_element(*self.submit)
+        time.sleep(1)
         self.log.info('移动Y轴滚动条到页面底部')
         self.find_element(*self.auth1).click()
         self.log.info('点击【复选框1】按钮')

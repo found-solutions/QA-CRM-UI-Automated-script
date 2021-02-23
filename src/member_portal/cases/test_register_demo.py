@@ -24,7 +24,7 @@ class TestRegisterDemo(pg.unittest.TestCase):
             pg.db(self.sql.format(self.email))
         pg.log.info('********** test end register demo ********** \n')
 
-    @pg.ddt.data(*pg.ExcelUtil('register_demo.xlsx').dict_data())
+    @pg.ddt.data(*pg.ExcelUtil('register_demo.xlsx').dict_data(1))
     @pg.ddt.unpack
     def test_register_demo(self, **kwargs):
         try:
@@ -45,6 +45,6 @@ class TestRegisterDemo(pg.unittest.TestCase):
             self.assertIn(kwargs.get('expect'), self.pr.get_title())
             pg.log.info('{}: 断言成功'.format(kwargs.get('desc')))
         except Exception as e:
-            self.pr.img_screen('register_demo')
+            self.pr.img_screen('register_demo_{}'.format(kwargs.get('case_no')))
             pg.log.error('注册demo异常：' + str(e))
             raise
