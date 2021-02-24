@@ -2,6 +2,7 @@ import unittest
 from all_path import Paths
 from common.HTMLTestRunner import HTMLTestRunner
 import os
+from common.send_email import send_email
 
 
 def find_case():
@@ -22,6 +23,9 @@ def run_all():
     with open(report, "wb") as f:
         r = HTMLTestRunner(stream=f, title="UI Auto Test", description="test result")
         r.run(find_case())
+
+    # send_email(os.path.join(Paths.report_path, os.listdir(Paths.report_path)[-1]))
+    send_email(report)
 
 
 if __name__ == "__main__":

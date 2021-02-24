@@ -25,6 +25,10 @@ class ReadConfig(object):
         value = self.cf.get("GLOBAL", key)
         return value
 
+    def get_email(self, key):
+        value = self.cf.get("EMAIL", key)
+        return value
+
 
 if __name__ == '__main__':
     f = ReadConfig()

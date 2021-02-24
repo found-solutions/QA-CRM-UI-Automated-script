@@ -199,6 +199,7 @@ class PageRegister(BasePage):
             time.sleep(2)
         self.find_element(*self.next2).click()
         self.log.info('点击step2【下一步】按钮')
+        time.sleep(0.5)
 
     def register_step3(self):
         self.find_element(*self.question1_checkbox).click()
